@@ -14,6 +14,8 @@ size_t cim_allocated_size_of(void* ptr);
 
 size_t cim_total_allocated_memory();
 size_t cim_total_deallocated_memory();
+size_t cim_total_allocation_calls();
+size_t cim_total_deallocated_calls();
 void cim_break_if_leak();
 
 

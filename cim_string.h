@@ -2,32 +2,40 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
+#include "cim_allocator.h"
 
 typedef struct cim_string
 {
+	char* data;
 	size_t __length;
 	size_t __capacity;
-	char* __data;
 } cim_string;
 
-void string_reserve(cim_string* string, size_t size);
-void string_recalc_size(cim_string* string);
+char* string_reserve(cim_string* string, size_t size);
+
+//void string_recalc_size(cim_string* string);
+
 char* string_init_c(cim_string* string, char from);
 char* string_init_ccp(cim_string* string, const char* from);
 char* string_init_s(cim_string* string, const cim_string* from);
-void string_delete(cim_string* string);
-//char* string_append_c(cim_string* to, char from);
+
+void string_free(cim_string* string);
+
+char* string_append_c(cim_string* to, char from);
 char* string_append_ccp(cim_string* to, const char* from);
 char* string_append_s(cim_string* to, const cim_string* from);
+
 char* string_at(const cim_string* string, size_t index);
 size_t string_length(const cim_string* string);
 char* string_front(const cim_string* string);
 char* string_back(const cim_string* string);
-char* string_data(const cim_string* string);
 bool string_empty(const cim_string* string);
+char* string_data(const cim_string* string);
 size_t string_capacity(const cim_string* string);
+
 char* string_shrink_to_fit(cim_string* string);
 void string_clear(cim_string* string);
+
 bool string_compare_ccp(const cim_string* s1, const cim_string* s2);
 bool string_compare_s(const cim_string* s1, const char* s2);
 
@@ -45,7 +53,7 @@ cim_string name##_to_cim_string(type value)																					\
 	}																														\
 																															\
 	string_reserve(&string, (size_t)log10(abs(value)) + 1 + (value > 0 ? 0 : 1)); 											\
-	if (string.__data == NULL)																								\
+	if (string.data == NULL)																								\
 		return string;																										\
 																															\
 	type base = 10;																											\
@@ -53,7 +61,7 @@ cim_string name##_to_cim_string(type value)																					\
 	if (base < 2 || base > 36)																								\
 		return string;																										\
 																															\
-	char* ptr = string.__data, *ptr1 = string.__data, tmp_char;																\
+	char* ptr = string.data, *ptr1 = string.data, tmp_char;																	\
 	type tmp_value;																											\
 																															\
 	do {																													\

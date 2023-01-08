@@ -7,14 +7,14 @@
 #ifdef CIM_TRACK_MEMORY_ALLOCATIONS
 	static size_t _total_allocated_memory = 0;
 	static size_t _total_deallocated_memory = 0;
-	static size_t total_allocation_calls = 0;
-	static size_t total_free_calls = 0;
+	static size_t _total_allocation_calls = 0;
+	static size_t _total_deallocation_calls = 0;
 #endif
 
 void* cim_malloc(size_t size)
 {
 #ifdef CIM_TRACK_MEMORY_ALLOCATIONS
-	total_allocation_calls++;
+	_total_allocation_calls++;
 	union cim_aligned_size* ptr = malloc(sizeof(union cim_aligned_size) + size);
 	if (ptr != NULL)
 	{
@@ -33,7 +33,7 @@ void cim_free(void* ptr)
 #ifdef CIM_TRACK_MEMORY_ALLOCATIONS
 	if (ptr != NULL) 
 	{
-		total_free_calls++;
+		_total_deallocation_calls++;
 		union cim_aligned_size* _ptr = ptr;
 		_ptr--;
 		_total_deallocated_memory += (sizeof * _ptr + _ptr->size) - sizeof(size_t);
@@ -71,6 +71,24 @@ size_t cim_total_deallocated_memory()
 {
 #ifdef CIM_TRACK_MEMORY_ALLOCATIONS
 	return _total_deallocated_memory;
+#else
+	return 0;
+#endif
+}
+
+size_t cim_total_allocation_calls()
+{
+#ifdef CIM_TRACK_MEMORY_ALLOCATIONS
+	return _total_allocation_calls;
+#else 
+	return 0;
+#endif
+}
+
+size_t cim_total_deallocated_calls()
+{
+#ifdef CIM_TRACK_MEMORY_ALLOCATIONS
+	return _total_deallocation_calls;
 #else
 	return 0;
 #endif
