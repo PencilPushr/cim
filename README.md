@@ -1,2 +1,2 @@
 # cim
-A simple text editor.
+Cim common code
